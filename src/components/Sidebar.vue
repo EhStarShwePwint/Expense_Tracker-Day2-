@@ -28,7 +28,7 @@ const menuItems = [
           Router Link ကို အသုံးပြုပြီး Menu တွေကို ချိတ်ဆက်ထားပါတယ်။
           'active-class' က လက်ရှိ Page ဖြစ်နေရင် အလိုအလျောက် Class ပေးမှာပါ။
         -->
-        <router-link 
+        <!-- <router-link 
           v-for="item in menuItems" 
           :key="item.id"
           :to="item.path"
@@ -37,6 +37,21 @@ const menuItems = [
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"></path>
+          </svg>
+          {{ item.label }}
+        </router-link> -->
+        <router-link
+          v-for="item in menuItems"
+          :key="item.id"
+          :to="item.path"
+          class="nav-link"
+          :class="{
+            'nav-link-active': $route.path === item.path,
+            'nav-link-inactive': $route.path !== item.path
+          }"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" :d="item.icon"></path>
           </svg>
           {{ item.label }}
         </router-link>

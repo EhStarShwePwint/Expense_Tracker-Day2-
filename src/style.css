@@ -5,17 +5,27 @@
 
 @layer components {
   /* Sidebar Navigation Link */
+  
   .nav-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors cursor-pointer;
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg
+      text-sm font-medium transition-colors cursor-pointer;
   }
-  
+
+  /* Active link */
   .nav-link-active {
-    @apply bg-indigo-600 text-white shadow-md;
+    @apply bg-indigo-700 text-white shadow-md;
   }
-  
+
+  /* Inactive link: hover effect */
   .nav-link-inactive {
     @apply text-slate-400 hover:bg-slate-800 hover:text-white;
   }
+
+  /* Active link must not change on hover */
+  .nav-link-active:hover {
+    @apply bg-indigo-700 text-white shadow-md;
+  }
+
 
   /* Form Inputs & Selects */
   .input-field {
