@@ -65,21 +65,61 @@ const perPageOptions = [5, 10, 25, 50]
 const selectedIds = ref<Array<string | number>>([])
 
 // ==================== Filtered Transactions ====================
+// const filteredTransactions = computed(() => {
+//   return transactions.value.filter(t => {
+//     const search = searchQuery.value.toLowerCase()
+//     const matchesSearch = search === '' || 
+//       t.note?.toLowerCase().includes(search) ||
+//       t.category.toLowerCase().includes(search) ||
+//       t.amount.toString().includes(search) ||
+//       t.date.includes(search)
+//     const matchesType = filterType.value === 'All types' || t.type === filterType.value.toLowerCase()
+//     const matchesCategory = filterCategory.value === 'All categories' || t.category === filterCategory.value
+//     const matchesDateFrom = !dateFrom.value || t.date >= dateFrom.value
+//     const matchesDateTo = !dateTo.value || t.date <= dateTo.value
+//     return matchesSearch && matchesType && matchesCategory && matchesDateFrom && matchesDateTo
+//   })
+// }) Update
 const filteredTransactions = computed(() => {
-  return transactions.value.filter(t => {
-    const search = searchQuery.value.toLowerCase()
-    const matchesSearch = search === '' || 
-      t.note?.toLowerCase().includes(search) ||
+  const search = searchQuery.value.trim().toLowerCase()
+
+  return transactions.value.filter((t) => {
+    // Search: Note, Category, Amount, Date, Type
+    const matchesSearch =
+      search === '' ||
+      (t.note ?? '').toLowerCase().includes(search) ||
       t.category.toLowerCase().includes(search) ||
-      t.amount.toString().includes(search) ||
-      t.date.includes(search)
-    const matchesType = filterType.value === 'All types' || t.type === filterType.value.toLowerCase()
-    const matchesCategory = filterCategory.value === 'All categories' || t.category === filterCategory.value
-    const matchesDateFrom = !dateFrom.value || t.date >= dateFrom.value
-    const matchesDateTo = !dateTo.value || t.date <= dateTo.value
-    return matchesSearch && matchesType && matchesCategory && matchesDateFrom && matchesDateTo
+      t.type.toLowerCase().includes(search) ||
+      String(t.amount).includes(search) ||
+      t.date.includes(search) ||
+      t.date.split('-').reverse().join('/').includes(search)
+
+    // Filter by transaction type
+    const matchesType =
+      filterType.value === 'All types' ||
+      t.type === filterType.value
+
+    // Filter by category
+    const matchesCategory =
+      filterCategory.value === 'All categories' ||
+      t.category === filterCategory.value
+
+    // Filter by date range
+    const matchesDateFrom =
+      !dateFrom.value || t.date >= dateFrom.value
+
+    const matchesDateTo =
+      !dateTo.value || t.date <= dateTo.value
+
+    return (
+      matchesSearch &&
+      matchesType &&
+      matchesCategory &&
+      matchesDateFrom &&
+      matchesDateTo
+    )
   })
-})
+})//Update
 
 // ==================== Pagination Computed ====================
 const totalPages = computed(() => Math.ceil(filteredTransactions.value.length / itemsPerPage.value) || 1)
@@ -109,13 +149,28 @@ const toggleSelection = (id: string | number) => {
   }
 }
 
+// const toggleSelectAll = () => {
+//   if (isAllSelected.value) {
+//     selectedIds.value = []
+//   } else {
+//     selectedIds.value = [...allFilteredIds.value]
+//   }
+// }Update
 const toggleSelectAll = () => {
+  const visibleIds = filteredTransactions.value.map(t => t.id)
+
   if (isAllSelected.value) {
-    selectedIds.value = []
+    // လက်ရှိ Filter ရလဒ်ထဲက ID တွေကိုသာ ဖြုတ်မယ်
+    selectedIds.value = selectedIds.value.filter(
+      id => !visibleIds.includes(id)
+    )
   } else {
-    selectedIds.value = [...allFilteredIds.value]
+    // လက်ရှိ Filter ရလဒ်ထဲက ID တွေကို ထပ်ထည့်မယ်
+    selectedIds.value = [
+      ...new Set([...selectedIds.value, ...visibleIds])
+    ]
   }
-}
+}//Update
 
 const clearSelection = () => {
   selectedIds.value = []
@@ -162,6 +217,16 @@ const clearFilters = () => {
   currentPage.value = 1
   clearSelection()
 }
+
+const hasActiveFilters = computed(() => {
+  return (
+    searchQuery.value.trim() !== '' ||
+    filterType.value !== 'All types' ||
+    filterCategory.value !== 'All categories' ||
+    dateFrom.value !== '' ||
+    dateTo.value !== ''
+  )
+})
 
 // ==================== Watchers ====================
 watch([searchQuery, filterType, filterCategory, dateFrom, dateTo], () => {
@@ -228,11 +293,60 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US').format(
         </div>
       </div>
 
-      <div class="flex items-center gap-6 text-sm pt-4 border-t border-gray-100">
-        <div>Income <span class="font-bold text-emerald-600">MMK {{ formatCurrency(totalIncome) }}</span></div>
-        <div>Expenses <span class="font-bold text-red-600">MMK {{ formatCurrency(totalExpense) }}</span></div>
-        <div>Balance <span class="font-bold text-gray-900">MMK {{ formatCurrency(balance) }}</span></div>
-      </div>
+      
+<div class="flex items-center justify-between gap-4 pt-4 border-t border-gray-100">
+
+  <!-- Left: Original Summary Design -->
+  <div class="flex items-center gap-6 text-sm">
+    <div>
+      Income
+      <span class="font-bold text-emerald-600">
+        MMK {{ formatCurrency(totalIncome) }}
+      </span>
+    </div>
+
+    <div>
+      Expenses
+      <span class="font-bold text-red-600">
+        MMK {{ formatCurrency(totalExpense) }}
+      </span>
+    </div>
+
+    <div>
+      Balance
+      <span class="font-bold text-gray-900">
+        MMK {{ formatCurrency(balance) }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Right: Clear Filters -->
+  
+<button
+  v-if="hasActiveFilters"
+  @click="clearFilters"
+  type="button"
+  class="flex-shrink-0 inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-indigo-600 border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors"
+>
+  <svg
+    class="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 4v5h5M20 20v-5h-5M5.6 9A7 7 0 0118 6l2 3M18.4 15A7 7 0 016 18l-2-3"
+    />
+  </svg>
+  Clear Filters
+</button>
+
+
+</div>
+
     </div>
 
     <!-- Table Section -->
