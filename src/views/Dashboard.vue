@@ -159,19 +159,10 @@ const formatCurrency = (value: number) =>
         <div
           class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center shrink-0"
         >
-          <svg
+          <font-awesome-icon
+            :icon="['fas', 'wallet']"
             class="w-5 h-5 text-indigo-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-            ></path>
-          </svg>
+          />
         </div>
         <div class="flex-1 min-w-0">
           <p
@@ -193,19 +184,10 @@ const formatCurrency = (value: number) =>
         <div
           class="w-10 h-10 bg-emerald-50 rounded-lg flex items-center justify-center shrink-0"
         >
-          <svg
+          <font-awesome-icon
+            :icon="['fas', 'arrow-trend-up']"
             class="w-5 h-5 text-emerald-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-            ></path>
-          </svg>
+          />
         </div>
         <div class="flex-1 min-w-0">
           <p
@@ -227,19 +209,10 @@ const formatCurrency = (value: number) =>
         <div
           class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center shrink-0"
         >
-          <svg
+          <font-awesome-icon
+            :icon="['fas', 'arrow-trend-down']"
             class="w-5 h-5 text-red-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"
-            ></path>
-          </svg>
+          />
         </div>
         <div class="flex-1 min-w-0">
           <p
@@ -261,19 +234,10 @@ const formatCurrency = (value: number) =>
         <div
           class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center shrink-0"
         >
-          <svg
+          <font-awesome-icon
+            :icon="['fas', 'tags']"
             class="w-5 h-5 text-amber-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-            ></path>
-          </svg>
+          />
         </div>
         <div class="flex-1 min-w-0">
           <p

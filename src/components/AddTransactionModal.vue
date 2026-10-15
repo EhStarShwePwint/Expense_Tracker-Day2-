@@ -131,109 +131,125 @@ const handleSave = () => {
           @click="emit('close')"
           class="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-100 transition-colors"
         >
-          <svg
-            class="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
+          <font-awesome-icon :icon="['fas', 'xmark']" class="w-5 h-5" />
         </button>
       </div>
 
-      <div class="p-6 space-y-4">
-        <!-- Type Toggle -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2"
-            >Type</label
-          >
-          <div class="flex bg-gray-100 rounded-lg p-1">
-            <button
-              @click="form.type = 'expense'"
-              :class="[
-                'flex-1 py-2 text-sm font-medium rounded-md transition-all',
-                form.type === 'expense'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700',
-              ]"
+      <!-- ✅ Form Tag နဲ့ ခြုံပါ -->
+      <form @submit.prevent="handleSave">
+        <div class="p-6 space-y-4">
+          <!-- Type Toggle -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Type</label
             >
-              Expenses
-            </button>
-            <button
-              @click="form.type = 'income'"
-              :class="[
-                'flex-1 py-2 text-sm font-medium rounded-md transition-all',
-                form.type === 'income'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700',
-              ]"
-            >
-              Income
-            </button>
+            <div class="flex bg-gray-100 rounded-lg p-1">
+              <!-- ✅ type="button" ထည့်ပါ -->
+              <button
+                type="button"
+                @click="form.type = 'expense'"
+                :class="[
+                  'flex-1 py-2 text-sm font-medium rounded-md transition-all',
+                  form.type === 'expense'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700',
+                ]"
+              >
+                Expenses
+              </button>
+              <!-- ✅ type="button" ထည့်ပါ -->
+              <button
+                type="button"
+                @click="form.type = 'income'"
+                :class="[
+                  'flex-1 py-2 text-sm font-medium rounded-md transition-all',
+                  form.type === 'income'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700',
+                ]"
+              >
+                Income
+              </button>
+            </div>
           </div>
-        </div>
 
-        <!-- Amount & Date -->
-        <div class="grid grid-cols-2 gap-4">
+          <!-- Amount & Date -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Amount <span class="text-red-500">*</span>
+              </label>
+              <input
+                v-model.number="form.amount"
+                type="number"
+                placeholder="0.00"
+                class="input-field"
+                :class="
+                  errors.amount ? 'border-red-500 focus:ring-red-500' : ''
+                "
+              />
+              <p v-if="errors.amount" class="text-red-500 text-xs mt-1">
+                {{ errors.amount }}
+              </p>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Date <span class="text-red-500">*</span>
+              </label>
+              <input v-model="form.date" type="date" class="input-field" />
+            </div>
+          </div>
+
+          <!-- Category (Dynamic) -->
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
-              Amount <span class="text-red-500">*</span>
+              Category <span class="text-red-500">*</span>
             </label>
-            <input
-              v-model.number="form.amount"
-              type="number"
-              placeholder="0.00"
-              class="input-field"
-              :class="errors.amount ? 'border-red-500 focus:ring-red-500' : ''"
-            />
-            <p v-if="errors.amount" class="text-red-500 text-xs mt-1">
-              {{ errors.amount }}
+            <select v-model="form.category" class="input-field">
+              <option
+                v-for="cat in availableCategories"
+                :key="cat"
+                :value="cat"
+              >
+                {{ cat }}
+              </option>
+            </select>
+            <p v-if="errors.category" class="text-red-500 text-xs mt-1">
+              {{ errors.category }}
             </p>
           </div>
+
+          <!-- Note -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              Date <span class="text-red-500">*</span>
-            </label>
-            <input v-model="form.date" type="date" class="input-field" />
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Note (optional)</label
+            >
+            <input
+              v-model="form.note"
+              type="text"
+              placeholder="What was this for?"
+              class="input-field"
+            />
           </div>
         </div>
 
-        <!-- Category (Dynamic) -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            Category <span class="text-red-500">*</span>
-          </label>
-          <select v-model="form.category" class="input-field">
-            <option v-for="cat in availableCategories" :key="cat" :value="cat">
-              {{ cat }}
-            </option>
-          </select>
-          <p v-if="errors.category" class="text-red-500 text-xs mt-1">
-            {{ errors.category }}
-          </p>
-        </div>
-
-        <!-- Note -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1"
-            >Note (optional)</label
+        <!-- ✅ Footer (Form အတွင်းမှာ ထားရမယ်) -->
+        <div
+          class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3"
+        >
+          <!-- ✅ type="button" ထည့်ပါ -->
+          <button
+            type="button"
+            @click="emit('close')"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
           >
-          <input
-            v-model="form.note"
-            type="text"
-            placeholder="What was this for?"
-            class="input-field"
-          />
+            Cancel
+          </button>
+          <!-- ✅ type="submit" ပြောင်းပါ (@click ဖျက်ပါ) -->
+          <button type="submit" class="btn-primary">Save</button>
         </div>
-      </div>
-
-      <div
+      </form>
+      <!-- <div
         class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3"
       >
         <button
@@ -243,7 +259,7 @@ const handleSave = () => {
           Cancel
         </button>
         <button @click="handleSave" class="btn-primary">Save</button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
