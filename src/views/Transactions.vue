@@ -162,13 +162,6 @@ const toggleSelection = (id: string | number) => {
   }
 };
 
-// const toggleSelectAll = () => {
-//   if (isAllSelected.value) {
-//     selectedIds.value = []
-//   } else {
-//     selectedIds.value = [...allFilteredIds.value]
-//   }
-// }Update
 const toggleSelectAll = () => {
   const visibleIds = filteredTransactions.value.map((t) => t.id);
 
