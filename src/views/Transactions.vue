@@ -283,29 +283,29 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US').format(
       </div>
 
       
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            From
-          </label>
-          <input
-            v-model="dateFrom"
-            type="date"
-            class="input-field w-full"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            To
-          </label>
-          <input
-            v-model="dateTo"
-            type="date"
-            class="input-field w-full"
-          />
-        </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          From
+        </label>
+        <input
+          v-model="dateFrom"
+          type="date"
+          class="input-field w-full"
+        />
       </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          To
+        </label>
+        <input
+          v-model="dateTo"
+          type="date"
+          class="input-field w-full"
+        />
+      </div>
+    </div>
 
 
       
@@ -368,7 +368,7 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US').format(
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       
       <!-- Select All Checkbox & Action Bar -->
-      <div v-if="filteredTransactions.length > 0" class="px-6 py-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+      <!-- <div v-if="filteredTransactions.length > 0" class="px-6 py-3 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
         <label class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
           <input 
             type="checkbox" 
@@ -399,6 +399,62 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US').format(
             Delete selected
           </button>
         </div>
+      </div> -->
+      
+<!-- Select All Checkbox & Action Bar -->
+      <div
+        v-if="filteredTransactions.length > 0"
+        class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex flex-col items-center justify-center gap-3"
+      >
+        <!-- Centered Select All -->
+        <label
+          class="flex items-center justify-center gap-2 text-sm text-gray-600 cursor-pointer select-none"
+        >
+          <input
+            type="checkbox"
+            :checked="isAllSelected"
+            @change="toggleSelectAll"
+            class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+          />
+          Select all ({{ filteredTransactions.length }})
+        </label>
+
+        <!-- Selected Actions -->
+        <div
+          v-if="selectedCount > 0"
+          class="flex flex-wrap items-center justify-center gap-3"
+        >
+          <span class="text-sm font-medium text-gray-700">
+            {{ selectedCount }} selected
+          </span>
+
+          <button
+            @click="clearSelection"
+            class="px-3 py-1 text-sm font-medium text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors"
+          >
+            Clear
+          </button>
+
+          <button
+            @click="openDeleteConfirm"
+            class="flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+              />
+            </svg>
+            Delete selected
+          </button>
+        </div>
       </div>
 
       <!-- Empty State -->
@@ -411,14 +467,15 @@ const formatCurrency = (value: number) => new Intl.NumberFormat('en-US').format(
       <table v-else class="w-full">
         <thead class="bg-white border-b border-gray-100">
           <tr>
-            <th class="w-12 px-6 py-3">
+            <!-- <th class="w-12 px-6 py-3">
               <input 
                 type="checkbox" 
                 :checked="isAllSelected"
                 @change="toggleSelectAll"
                 class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4" 
               />
-            </th>
+            </th> -->
+            <th></th>
             <th class="th-text">TRANSACTION</th>
             <th class="th-text">CATEGORY</th>
             <th class="th-text">DATE</th>
