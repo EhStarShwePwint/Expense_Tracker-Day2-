@@ -6,7 +6,7 @@ import type { RouteRecordRaw } from 'vue-router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/dashboard' // Default အနေနဲ့ Dashboard ကို သွားမယ်
+    redirect: '/dashboard' // Default go to Dashboard 
   },
   {
     path: '/dashboard',

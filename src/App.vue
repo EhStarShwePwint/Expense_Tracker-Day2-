@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar.vue'
 import ToastNotification from './components/ToastNotification.vue'
 import { useToast } from './composables/useToast'
 
-// Toast တွေကို ယူမယ်
+// Toast 
 const { toasts, removeToast } = useToast()
 </script>
 
@@ -15,7 +15,7 @@ const { toasts, removeToast } = useToast()
       <router-view></router-view>
     </main>
 
-    <!-- Toast Notification Container (App တစ်ခုလုံးအတွက်) -->
+    <!-- Toast Notification Container (App) -->
     <ToastNotification :toasts="toasts" @remove="removeToast" />
   </div>
 </template>
