@@ -214,9 +214,9 @@ const handleSave = () => {
                 {{ cat }}
               </option>
             </select>
-            <p v-if="errors.category" class="text-red-500 text-xs mt-1">
+            <!-- <p v-if="errors.category" class="text-red-500 text-xs mt-1">
               {{ errors.category }}
-            </p>
+            </p> -->
           </div>
 
           <!-- Note -->
@@ -249,17 +249,6 @@ const handleSave = () => {
           <button type="submit" class="btn-primary">Save</button>
         </div>
       </form>
-      <!-- <div
-        class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3"
-      >
-        <button
-          @click="emit('close')"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          Cancel
-        </button>
-        <button @click="handleSave" class="btn-primary">Save</button>
-      </div> -->
     </div>
   </div>
 </template>
