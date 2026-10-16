@@ -19,6 +19,8 @@ const { showToast } = useToast();
 const isModalOpen = ref(false);
 const isConfirmOpen = ref(false);
 const editingTransaction = ref<Transaction | null>(null);
+// ✅ တစ်ခုချင်း ဖျက်မယ့် ID ကို သိမ်းထားမယ်
+const deleteTargetId = ref<string | number | null>(null);
 
 const openAddModal = () => {
   editingTransaction.value = null;
@@ -43,13 +45,55 @@ const handleUpdateTransaction = (updatedTransaction: Transaction) => {
   editingTransaction.value = null;
   showToast("Transaction updated successfully!", "success");
 };
-
+//==================== Delete Handlers ====================
+// ✅ တစ်ခုချင်း Delete ခလုတ် နှိပ်ရင် → Confirm Modal ဖွင့်
 const handleDelete = (id: string | number) => {
-  deleteTransaction(id);
-  selectedIds.value = selectedIds.value.filter(
-    (selectedId) => selectedId !== id,
-  );
-  showToast("Transaction deleted successfully!", "success");
+  deleteTargetId.value = id;
+  isConfirmOpen.value = true;
+};
+
+// ✅ Select All Delete ခလုတ် နှိပ်ရင် → Confirm Modal ဖွင့်
+const openDeleteConfirm = () => {
+  if (selectedIds.value.length === 0) return;
+  deleteTargetId.value = null; // Single delete မဟုတ်ဘူး
+  isConfirmOpen.value = true;
+};
+
+// ✅ Confirm Modal မှာ Confirm နှိပ်ရင်
+const confirmDelete = () => {
+  if (deleteTargetId.value !== null) {
+    // Single Delete
+    deleteTransaction(deleteTargetId.value);
+    selectedIds.value = selectedIds.value.filter(
+      (id) => id !== deleteTargetId.value,
+    );
+    showToast("Transaction deleted successfully!", "success");
+  } else {
+    // Bulk Delete (Select All)
+    const count = selectedIds.value.length;
+    selectedIds.value.forEach((id) => {
+      deleteTransaction(id);
+    });
+    clearSelection();
+    showToast(`${count} transactions deleted successfully!`, "success");
+  }
+
+  deleteTargetId.value = null;
+  isConfirmOpen.value = false;
+
+  if (currentPage.value > totalPages.value) {
+    currentPage.value = Math.max(1, totalPages.value);
+  }
+};
+
+// ✅ Cancel နှိပ်ရင်
+const cancelDelete = () => {
+  deleteTargetId.value = null;
+  isConfirmOpen.value = false;
+};
+
+const clearSelection = () => {
+  selectedIds.value = [];
 };
 
 // ==================== Filter State ====================
@@ -66,23 +110,6 @@ const perPageOptions = [5, 10, 25, 50];
 
 // ==================== Selection State ====================
 const selectedIds = ref<Array<string | number>>([]);
-
-// ==================== Filtered Transactions ====================
-// const filteredTransactions = computed(() => {
-//   return transactions.value.filter(t => {
-//     const search = searchQuery.value.toLowerCase()
-//     const matchesSearch = search === '' ||
-//       t.note?.toLowerCase().includes(search) ||
-//       t.category.toLowerCase().includes(search) ||
-//       t.amount.toString().includes(search) ||
-//       t.date.includes(search)
-//     const matchesType = filterType.value === 'All types' || t.type === filterType.value.toLowerCase()
-//     const matchesCategory = filterCategory.value === 'All categories' || t.category === filterCategory.value
-//     const matchesDateFrom = !dateFrom.value || t.date >= dateFrom.value
-//     const matchesDateTo = !dateTo.value || t.date <= dateTo.value
-//     return matchesSearch && matchesType && matchesCategory && matchesDateFrom && matchesDateTo
-//   })
-// }) Update
 const filteredTransactions = computed(() => {
   const search = searchQuery.value.trim().toLowerCase();
 
@@ -175,15 +202,6 @@ const toggleSelectAll = () => {
     selectedIds.value = [...new Set([...selectedIds.value, ...visibleIds])];
   }
 }; //Update
-
-const clearSelection = () => {
-  selectedIds.value = [];
-};
-
-const openDeleteConfirm = () => {
-  if (selectedIds.value.length === 0) return;
-  isConfirmOpen.value = true;
-};
 
 const confirmDeleteSelected = () => {
   const count = selectedIds.value.length;
@@ -413,19 +431,7 @@ const formatCurrency = (value: number) =>
           @click="openDeleteConfirm"
           class="flex items-center gap-1.5 px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 transition-colors"
         >
-          <svg
-            class="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-            ></path>
-          </svg>
+          <font-awesome-icon :icon="['fas', 'trash']" class="w-4 h-4" />
           Delete selected
         </button>
       </div>
@@ -584,15 +590,23 @@ const formatCurrency = (value: number) =>
     />
 
     <!-- Delete Confirmation Modal -->
+    <!-- Delete Confirmation Modal -->
     <ConfirmModal
       :isOpen="isConfirmOpen"
-      title="Delete transactions"
-      message="You are about to permanently delete these items. This action cannot be undone."
-      confirmText="Delete"
+      :title="
+        deleteTargetId !== null ? 'Delete transaction' : 'Delete transactions'
+      "
+      :message="
+        deleteTargetId !== null
+          ? 'You are about to permanently delete this item. This action cannot be undone.'
+          : 'You are about to permanently delete these items. This action cannot be undone.'
+      "
+      :confirmText="
+        deleteTargetId !== null ? 'Delete' : `Delete ${selectedCount}`
+      "
       cancelText="Cancel"
-      :count="selectedCount"
-      @confirm="confirmDeleteSelected"
-      @cancel="isConfirmOpen = false"
+      @confirm="confirmDelete"
+      @cancel="cancelDelete"
     />
   </div>
 </template>
